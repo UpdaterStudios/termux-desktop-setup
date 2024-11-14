@@ -1,39 +1,38 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Termux Ubuntu Masaüstü Scripti - Basit Kurulum için
 
-# Masaüstü kurulumu için temel işlevler
+# Ubuntu kurulum fonksiyonu
 install_desktop() {
-    echo "Ubuntu kurulumu başlıyor..."
-    
-    # Proot Distro kurulumu
+    echo "Ubuntu kurulumu başlatılıyor..."
+
+    # Proot Distro ve Ubuntu kurulumu
     pkg install proot-distro -y
     proot-distro install ubuntu
     echo "Ubuntu kuruldu."
 
-    # Ubuntu içinde masaüstü ortamı kur
+    # Ubuntu içinde XFCE masaüstü ortamı, VSCode ve Wine kurulumu
     proot-distro login ubuntu -- bash -c "
         apt update -y && apt upgrade -y
-        apt install xfce4 xfce4-goodies xterm -y
-        apt install arc-theme papirus-icon-theme curl wget git -y
+        apt install -y xfce4 xfce4-terminal dbus-x11 curl wget
+        apt install -y arc-theme papirus-icon-theme  # Hafif ve modern görünüm için tema
         curl -fsSL https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64 -o vscode.deb
-        dpkg -i vscode.deb || apt --fix-broken install -y
+        dpkg -i vscode.deb || apt --fix-broken install -y  # VSCode kurulumu
         rm vscode.deb
-        apt install wine gdebi -y
+        apt install -y wine  # Wine kurulumu
     "
-    echo "Masaüstü ortamı ve uygulamalar kuruldu."
+    echo "Masaüstü ortamı, VSCode ve Wine kuruldu."
 }
 
-# Masaüstü başlatma işlevi
+# Masaüstü başlatma fonksiyonu
 start_desktop() {
     echo "Masaüstü ortamı başlatılıyor..."
     proot-distro login ubuntu -- bash -c "
         export DISPLAY=:1
-        xfce4-session &
+        dbus-launch --exit-with-session xfce4-session &
     "
     echo "Masaüstü başlatıldı. Termux11 ile bağlanabilirsiniz."
 }
 
-# Masaüstü durdurma işlevi
+# Masaüstü durdurma fonksiyonu
 stop_desktop() {
     echo "Masaüstü ortamı kapatılıyor..."
     pkill -f xfce4-session
