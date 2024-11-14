@@ -9,17 +9,26 @@ install_desktop() {
     proot-distro install ubuntu
     echo "Ubuntu kuruldu."
 
-    # Ubuntu içinde XFCE masaüstü ortamı, VSCode ve Wine kurulumu
+    # Ubuntu içinde XFCE masaüstü ortamı, Arc teması, VSCode ve Wine kurulumu
     proot-distro login ubuntu -- bash -c "
         apt update -y && apt upgrade -y
         apt install -y xfce4 xfce4-terminal dbus-x11 curl wget
-        apt install -y arc-theme papirus-icon-theme  # Hafif ve modern görünüm için tema
+
+        # Arc teması kurulumu
+        apt install -y arc-theme
+        echo 'Arc teması kuruldu. Hafif ve modern bir görünüm sağlanacak.'
+
+        # Visual Studio Code kurulumu
         curl -fsSL https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64 -o vscode.deb
-        dpkg -i vscode.deb || apt --fix-broken install -y  # VSCode kurulumu
+        dpkg -i vscode.deb || apt --fix-broken install -y
         rm vscode.deb
-        apt install -y wine  # Wine kurulumu
+        echo 'Visual Studio Code kuruldu.'
+
+        # Wine kurulumu
+        apt install -y wine
+        echo 'Wine kuruldu.'
     "
-    echo "Masaüstü ortamı, VSCode ve Wine kuruldu."
+    echo "Masaüstü ortamı, Arc teması, VSCode ve Wine kuruldu."
 }
 
 # Masaüstü başlatma fonksiyonu
