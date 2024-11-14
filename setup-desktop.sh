@@ -31,13 +31,32 @@ install_desktop() {
     echo "Masaüstü ortamı, Arc teması, VSCode ve Wine kuruldu."
 }
 
+# X11 sunucusunu başlatma fonksiyonu
+start_x11() {
+    echo "X11 sunucusu başlatılıyor..."
+
+    # X11 sunucusu kurulumunu kontrol et
+    pkg install x11-repo -y
+    pkg install xterm -y
+    termux-x11 :0 &  # X11 başlatma komutu
+    export DISPLAY=:0
+
+    echo "X11 sunucusu başlatıldı ve DISPLAY ayarlandı."
+}
+
 # Masaüstü başlatma fonksiyonu
 start_desktop() {
     echo "Masaüstü ortamı başlatılıyor..."
+
+    # X11 sunucusunun başlatıldığını kontrol et ve başlat
+    start_x11
+
+    # Masaüstü ortamını başlat
     proot-distro login ubuntu -- bash -c "
-        export DISPLAY=:1
+        export DISPLAY=:0
         dbus-launch --exit-with-session xfce4-session &
     "
+
     echo "Masaüstü başlatıldı. Termux11 ile bağlanabilirsiniz."
 }
 
@@ -45,6 +64,7 @@ start_desktop() {
 stop_desktop() {
     echo "Masaüstü ortamı kapatılıyor..."
     pkill -f xfce4-session
+    pkill -f termux-x11
     echo "Masaüstü kapatıldı."
 }
 
